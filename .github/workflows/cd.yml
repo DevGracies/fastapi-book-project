@@ -1,0 +1,42 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: windows-latest  
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          venv\Scripts\activate
+          pip install -r requirements.txt
+
+      - name: Set up SSH
+        run: |
+          mkdir C:\Users\runneradmin\.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > C:\Users\runneradmin\.ssh\id_rsa
+          chmod 600 C:\Users\runneradmin\.ssh\id_rsa
+          ssh-keyscan -H your_server_ip >> C:\Users\runneradmin\.ssh\known_hosts
+
+      - name: Deploy application
+        run: |
+          echo "Deploying application..."
+          ssh -i C:\Users\runneradmin\.ssh\id_rsa user@your_server_ip powershell -Command "& {
+            cd C:\path\to\deploy;
+            git pull origin main;
+            venv\Scripts\activate;
+            pip install -r requirements.txt;
+            Restart-Service -Name your_app_service  # If using a Windows service
+          }"
