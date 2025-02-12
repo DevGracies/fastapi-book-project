@@ -1,0 +1,78 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main  # Change this if using a different branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # GitHub-hosted runner
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Add SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.-----BEGIN OPENSSH PRIVATE KEY-----
+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
+rwuOLant6HoTWEghLIqsfXqwwG5IeSkALguiAnarzOh40HYyXsB1ECTFsyh7wJ4tmbi/3k
+/YkJm3U7zhsW1O6F/qX1rqZNMpdQIcQfXpHAY6OgQTM9LADAcIJUZSfV7Kz0k2IqNKklDY
+D41Vd8gOXYDVkRAAAAEBAPS3yb97E9ryMreKB/JBkdcjhMTiMz0aO7tBuY4OkAl0QLdzhN
++st3xLhw8TDED3uVSTRpIOpgUAG6x+s5UgM8yh4TbJv/03nGn3jHzxgWRRPfDpmG+5NFNS
+0eojiTlCNCodDj/PElb1hJ9OdrCynBPxIEJOi71zHdOwGGcvz9wKhCnO7yN7mUbsLVaXY3
+UAReB95L56V3BH0F3B4YF/8SDGm2JU75pklcSY3YJhgmP5ILO3jmoKdSnSWGDPdvPoukv6
+BQlgtI7nHrZRx3JmgusehkQteteUazO6aYU2lTXT1hTyezZkSx1KCn1uGRyD5D1FL7moB+
+dLknQ+dW/qLqkAAAEBAO9lAdW4kXu1w9XT5qTLXVX5eR+6zJf7P5s7F4Gknq0We4RALtn1
+FYuXcMMwo6l10PZNXhKGf4tqi7ef/46uGaw0Ui1LCHU0EO4ZEjtodyEwm4C65AB8vY9KmQ
+3yJ7QFr2S9CzPmlBUeOf0y6kqx161BoNm/eL7TrkqdEbGjfuhcQZY4UCy+HVXvk+zsSjq8
+eXbDWLh5Tvic98gVjy8WC9lfulasZ/x/fJ5sdjLcIP22fUw35vw/UczyCw2VZwz6tmixMp
+vQ/V2abNbYRHz6pRnlwPXmClUDHltp9n/l3NDoZOCbaIxocgqE12eIhTAVJwCAycLakoFn
+B9bMce+S8I0AAAAKdXNlckBPTE9SSQE=
+-----END OPENSSH PRIVATE KEY----- }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 44.210.129.40 >> ~/.ssh/known_hosts
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/id_rsa ec2-user@44.210.129.40 << 'EOF'
+          cd /home/ec2-user/your_project_directory  # Adjust as needed
+          git pull origin main  # Pull latest code
+          pip install -r requirements.txt  # Install dependencies
+          systemctl restart your_api_service  # Restart the API service
+          EOF
