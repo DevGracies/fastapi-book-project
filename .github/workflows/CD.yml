@@ -1,29 +1,21 @@
-name: Deploy to AWS EC2
+name: Deploy Nginx to Render
 
 on:
   push:
     branches:
-      - main # Change this if using a different branch
+      - main  # Adjust as needed
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest # GitHub-hosted runner
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Add SSH Key
+      - name: Deploy to Render
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 44.210.129.40 >> ~/.ssh/known_hosts
-
-      - name: Deploy to EC2
-        run: |
-          ssh -i ~/.ssh/id_rsa ec2-user@44.210.129.40 << 'EOF'
-          git pull origin main  # Pull latest code
-          pip install -r requirements.txt  # Install dependencies
-          systemctl restart your_api_service  # Restart the API service
-          EOF
+          curl -X POST "https://fastapi-book-project-hng.onrender.com" \
+          -H "Authorization: Bearer $RENDER_API_KEY"
