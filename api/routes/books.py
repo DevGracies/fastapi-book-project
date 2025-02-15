@@ -66,6 +66,3 @@ async def get_book(book_id: int):
             detail="Book not found"
         )
     return book
-@app.route('/stage2')
-def stage2():
-    return "Stage 2 content"
